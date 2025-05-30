@@ -39,7 +39,7 @@ int main(void)
         return -1;
     }
 
-    janela = al_create_display(640, 480);
+    janela = al_create_display(728, 410);
     if (!janela)
     {
         fprintf(stderr, "Falha ao criar janela!\n");
@@ -50,7 +50,9 @@ int main(void)
     // cor de fundo --- mudar para foto
     al_init_image_addon();
 
-        ALLEGRO_BITMAP *background = al_load_bitmap("Content/Finalbackground.jpeg");    
+        //ALLEGRO_BITMAP *background = al_load_bitmap("Content/backvhs.jpeg");  
+        ALLEGRO_BITMAP *background = al_load_bitmap("Content/ele.jpg");    
+
         if (!background) {
         fprintf(stderr, "Falha ao carregar imagem de fundo!\n");
         al_destroy_display(janela);
@@ -59,14 +61,21 @@ int main(void)
     }
     al_draw_bitmap(background, 0, 0, 0);
 
-    al_draw_text(font, al_map_rgb(0, 0, 0), 320, 85, ALLEGRO_ALIGN_CENTER, "Tri Angle");
+    
+    al_draw_text(font, al_map_rgb(0, 0, 0), 160, 75, ALLEGRO_ALIGN_CENTER, "Tri Angle");
 
   
     // Escreve "Jogar" centralizado no bloco
-    al_draw_text(font, al_map_rgb(0, 0, 0), 320, 150, ALLEGRO_ALIGN_CENTER, "Jogar");
+    al_draw_text(font, al_map_rgb(0, 0, 0), 160, 125, ALLEGRO_ALIGN_CENTER, "Jogar");
+
+    // Escreve "Instrucoes" centralizado no bloco
+    al_draw_text(font, al_map_rgb(0, 0, 0), 160, 150, ALLEGRO_ALIGN_CENTER, "Instrucoes");
+
+    // Escreve "Historico" centralizado no bloco
+    al_draw_text(font, al_map_rgb(0, 0, 0), 160, 175, ALLEGRO_ALIGN_CENTER, "Historico");
 
     // Escreve "Sair" centralizado no bloco
-    al_draw_text(font, al_map_rgb(0, 0, 0), 320, 250, ALLEGRO_ALIGN_CENTER, "Sair");
+    al_draw_text(font, al_map_rgb(0, 0, 0), 160, 200, ALLEGRO_ALIGN_CENTER, "Sair");
 
 
      
@@ -105,3 +114,8 @@ int main(void)
 
     return 0;
 }
+
+
+
+
+// Compilar com: gcc t4.c -o trab -lallegro -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_image -lallegro_main
