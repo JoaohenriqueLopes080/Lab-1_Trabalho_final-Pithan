@@ -14,6 +14,7 @@ int main(void)
 {
     ALLEGRO_DISPLAY *janela = NULL;
     ALLEGRO_FONT *font = NULL;
+    ALLEGRO_FONT *font2 = NULL;
 
     // Inicializa a Allegro e seus addons
     if (!al_init()) {
@@ -34,6 +35,13 @@ int main(void)
         fprintf(stderr, "Falha ao carregar fonte alice.ttf!\n");
         return -1;
     }
+
+    font2 = al_load_ttf_font("Content/alice.ttf", 24, 0);
+    if (!font) {
+        fprintf(stderr, "Falha ao carregar fonte alice.ttf!\n");
+        return -1;
+    }
+
 
     janela = al_create_display(728, 410);
     if (!janela) {
@@ -110,18 +118,32 @@ int main(void)
             mouse_y = event.mouse.y;
 
             // 1. Clique no menu principal
-            if (!showing_help) {
+            if (!showing_help) { // se não estiver mostrando ajuda
+                // Verifica se o mouse está dentro do botão "Jogar"
                 if (!showing_play &&
                     mouse_x >= jogar_x - jogar_w / 2 &&
                     mouse_x <= jogar_x + jogar_w / 2 &&
                     mouse_y >= jogar_y &&
                     mouse_y <= jogar_y + jogar_h) {
                     // Aqui você pode adicionar a lógica para iniciar o jogo
-                    play_image = al_load_bitmap("Content/modos.png");
+                    play_image = al_load_bitmap("Content/Modos.png");
+                    if(play_image) {
+                        al_draw_bitmap(background, 0, 0, 0);
+                        int play_w = al_get_bitmap_width(play_image);
+                        int play_h = al_get_bitmap_height(play_image);
+                        al_draw_scaled_bitmap(play_image,
+                                            0, 0, play_w, play_h,
+                                            0, 0, win_w, win_h,
+                                            0);
+                        al_draw_text(font, al_map_rgb(255, 0 , 0 ), 160, 300, ALLEGRO_ALIGN_CENTER, "Jogar PVP");
+                        al_draw_text(font, al_map_rgb(255, 0 , 0 ), 500, 300, ALLEGRO_ALIGN_CENTER, "Jogar PVM");
+                           al_draw_text(font, al_map_rgb(255, 0, 0), 160, 300, ALLEGRO_ALIGN_CENTER, "Retornar ao Menu");
+                        al_flip_display();
+                        showing_play = true;
+                    }
 
 
-
-                } else if (
+                } else if ( // se estiver mostrando ajuda
                     mouse_x >= ajuda_x - ajuda_w / 2 &&
                     mouse_x <= ajuda_x + ajuda_w / 2 &&
                     mouse_y >= ajuda_y &&
@@ -140,19 +162,21 @@ int main(void)
                         showing_help = true;
                     }
                 }
-                // ...outros botões do menu...
+
             }
             // 2. Clique na tela de ajuda
-            else if (showing_help) {
+            else if (showing_help) { 
                 int rmenu_x = 160;
                 int rmenu_y = 300;
                 int rmenu_w = 200;
                 int rmenu_h = 40;
+                // se o mouse estriver dentro do retornar menu e clicar
                 if (
                     mouse_x >= rmenu_x - rmenu_w / 2 &&
                     mouse_x <= rmenu_x + rmenu_w / 2 &&
                     mouse_y >= rmenu_y &&
                     mouse_y <= rmenu_y + rmenu_h) {
+                    // printa tela menu novamente
                     al_draw_bitmap(background, 0, 0, 0);
                     al_draw_text(font, al_map_rgb(0, 0, 0), 160, 75, ALLEGRO_ALIGN_CENTER, "Tri Angle");
                     al_draw_text(font, al_map_rgb(0, 0, 0), 160, 125, ALLEGRO_ALIGN_CENTER, "Jogar");
@@ -165,8 +189,9 @@ int main(void)
                     showing_help = false;
                 }
             }
-
-            // 3. Clique em "Sair"
+            // 3. Clique no botão "Historico"
+            else if 
+            // 4. Clique em "Sair"
             if (!exit &&
                 mouse_x >= sair_x - sair_h / 2 &&
                 mouse_x <= sair_x + sair_w / 2 &&

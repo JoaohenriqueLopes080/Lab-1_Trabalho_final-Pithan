@@ -139,3 +139,40 @@
 ---
 
 > Consulte a [documentação oficial do Allegro](https://liballeg.org/a5docs/) para mais detalhes e comandos avançados.
+
+
+
+// … depois de criar a fila:
+        al_register_event_source(queue, al_get_mouse_event_source());
+
+        // variáveis de estado (antes do loop)
+        bool tela_selecao_modo = false;
+        int jogar_x = 160, jogar_y = 125, jogar_w = 100, jogar_h = 25;
+
+        while (running) {
+            ALLEGRO_EVENT event;
+            al_wait_for_event(queue, &event);
+
+            if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                running = false;
+            }
+            else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP &&
+                     event.mouse.button == 1 &&
+                     !tela_selecao_modo)
+            {
+                int mx = event.mouse.x, my = event.mouse.y;
+                if (mx >= jogar_x - jogar_w/2 && mx <= jogar_x + jogar_w/2 &&
+                    my >= jogar_y && my <= jogar_y + jogar_h)
+                {
+                    tela_selecao_modo = true;
+
+                    // redesenha tela de seleção de modo
+                    al_clear_to_color(al_map_rgb(255,255,255));
+                    al_draw_bitmap(background, 0, 0, 0);
+                    al_draw_text(font, al_map_rgb(0,0,0), 160,  75, ALLEGRO_ALIGN_CENTER, "Selecione o Modo");
+                    al_draw_text(font, al_map_rgb(0,0,0), 160, 125, ALLEGRO_ALIGN_CENTER, "Modo 1");
+                    al_draw_text(font, al_map_rgb(0,0,0), 160, 150, ALLEGRO_ALIGN_CENTER, "Modo 2");
+                    al_flip_display();
+                }
+            }
+        }

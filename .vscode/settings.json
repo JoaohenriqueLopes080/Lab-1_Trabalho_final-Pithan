@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "I_A.C": "cpp"
+        "I_A.C": "cpp",
+        "TrabComIa.C": "cpp",
+        "IA.C": "cpp"
     }
 }
