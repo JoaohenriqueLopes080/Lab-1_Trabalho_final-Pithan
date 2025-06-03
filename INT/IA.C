@@ -38,9 +38,9 @@ Config criar_config() {
 }
 
 Jogo* criar_jogo(Config c) {
-    Jogo* j = malloc(sizeof(Jogo));
+    Jogo* j = (Jogo*)malloc(sizeof(Jogo));
     j->cfg = c;
-    j->tab = malloc(c.tamanho * sizeof(int*));
+    j->tab = (int**)malloc(c.tamanho * sizeof(int*));
     for (int i = 0; i < c.tamanho; i++) {
         j->tab[i] = malloc(c.tamanho * sizeof(int));
         for (int k = 0; k < c.tamanho; k++) j->tab[i][k] = 0;

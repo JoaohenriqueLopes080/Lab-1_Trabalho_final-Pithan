@@ -165,4 +165,7 @@ Explore e combine esses comandos para criar documentos incríveis em Markdown!
 
 
 ### A avaliação irá levar em conta o modo como a exibição do jogo foi implementada. 
-### QUERO ME MATAR.
+
+
+## feitos - 1 de junho
+## AJUDA, SAIDA E conhecimento de allegro na base.
