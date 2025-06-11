@@ -17,7 +17,7 @@ void registrar_partida();
 void salvar_jogo();
 bool carregar_jogo();
 
-// Funções de UI
+// ALLEGRO
 void desenhar_menu1();
 void desenhar_modos2();
 void desenhar_ajuda3();

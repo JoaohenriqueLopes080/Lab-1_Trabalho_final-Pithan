@@ -83,8 +83,8 @@ void pecas_jogadores(ALLEGRO_FONT *font, int win_w, int win_h, int pecas_jogador
 }
 
 void desenha_tabuleiroTriangulo( ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, int win_w, int win_h,
-                                EstadoEspaço tabuleiro[7], ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2 ) 
-    {
+                                EstadoEspaço tabuleiro[7], ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2,
+                                float mouse_x, float mouse_y) {
     al_draw_bitmap(background, 0, 0, 0);
 
     // Conte as peças de cada jogador no tabuleiro
@@ -107,8 +107,20 @@ void desenha_tabuleiroTriangulo( ALLEGRO_BITMAP *background, ALLEGRO_FONT *font,
     al_draw_line(pontos_tabuleiro[4].x, pontos_tabuleiro[4].y, pontos_tabuleiro[5].x, pontos_tabuleiro[5].y, al_map_rgb(0,0,0), 3);
     al_draw_line(pontos_tabuleiro[5].x, pontos_tabuleiro[5].y , pontos_tabuleiro[6].x, pontos_tabuleiro[6].y, al_map_rgb(0,0,0), 3);
 
+
+
     // Desenha os círculos das casas e as peças dos jogadores
     for (int i = 0; i < 7; i++) {
+
+        float dx = mouse_x - pontos_tabuleiro[i].x;
+        float dy = mouse_y - pontos_tabuleiro[i].y;
+        bool mouse_sobre = (dx*dx + dy*dy <= 25*25);
+
+        
+        if (mouse_sobre && tabuleiro[i] == VAZIO) {
+            al_draw_filled_circle(pontos_tabuleiro[i].x, pontos_tabuleiro[i].y, 27, al_map_rgba(255, 255, 0, 120));
+        }
+
         if (tabuleiro[i] == JOGADOR1 && peca_player1) {
             al_draw_scaled_bitmap(
                 peca_player1, 0, 0,
@@ -161,11 +173,18 @@ void etapa_posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background
     int pecas_jogador1 = 0, pecas_jogador2 = 0;
     int total_pecas = 0;
     bool posicionando = true;
+    float mx = 0, my = 0;
 
     while (posicionando) {
-        desenha_tabuleiroTriangulo(background, font, win_w, win_h, tabuleiro, peca_player1, peca_player2);
+        desenha_tabuleiroTriangulo(background, font, win_w, win_h, tabuleiro, peca_player1, peca_player2, mx, my);
         ALLEGRO_EVENT event;
         al_wait_for_event(queue, &event);
+
+
+        if (event.type == ALLEGRO_EVENT_MOUSE_AXES) { // Atualiza a posição do mouse
+            mx = event.mouse.x;
+            my = event.mouse.y;
+            }
 
         if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
             float mx = event.mouse.x;
