@@ -40,34 +40,6 @@ void limpaTela() {
     system(CLEAR);
 }
 
-void salvar_registro(const RegistroPartida *registro) {
-    FILE *arquivo = fopen("registros.dat", "ab");
-    if (arquivo) {
-        fwrite(registro, sizeof(RegistroPartida), 1, arquivo);
-        fclose(arquivo);
-    } else {
-        fprintf(stderr, "Erro ao abrir arquivo de registros para escrita.\n");
-    }
-}
-
-void carregar_registros() {
-    FILE *arquivo = fopen("registros.dat", "rb");
-    if (arquivo) {
-        RegistroPartida registro;
-        printf("Registros de Partidas:\n");
-        while (fread(&registro, sizeof(RegistroPartida), 1, arquivo)) {
-            printf("Modo: %s, Resultado: %s, Duração: %.2f segundos\n",
-                   registro.modo_jogo, registro.resultado, registro.duracao);
-        }
-        fclose(arquivo);
-    } else {
-        fprintf(stderr, "Nenhum registro encontrado.\n");
-    }
-}
-
-
-
-
 // Função para desenhar a quantidade de peças de cada jogador na tela
 void pecas_jogadores(ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h, int pecas_jogador1, int pecas_jogador2) {
     // Desenha o texto "Jogador 1" no canto superior esquerdo
@@ -271,31 +243,25 @@ void desenha_ajuda3(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *help_image, ALLE
     al_flip_display();
 }
 
-void desenha_historico4(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *History_image, ALLEGRO_FONT *font, int win_w, int win_h) {
+void desenha_historico4(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *History_image ,ALLEGRO_FONT *font, int win_w, int win_h) {
+    // Desenha a imagem de fundo na tela, começando do canto superior esquerdo (0,0)
     al_draw_bitmap(background, 0, 0, 0);
+
+    // Obtém a largura da imagem de histórico
     int history_w = al_get_bitmap_width(History_image);
+    // Obtém a altura da imagem de histórico
     int history_h = al_get_bitmap_height(History_image);
+
+    // Desenha a imagem de histórico redimensionada para ocupar toda a janela
     al_draw_scaled_bitmap(History_image, 0, 0, history_w, history_h, 0, 0, win_w, win_h, 0);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 364, 40, ALLEGRO_ALIGN_CENTER, "Historico de Partidas");
 
-    // Exibir registros de partidas
-    FILE *arquivo = fopen("registros.dat", "rb");
-    if (arquivo) {
-        RegistroPartida registro;
-        int y_start = 100;
-        int y_step = 25;
-        while (fread(&registro, sizeof(RegistroPartida), 1, arquivo)) {
-            char texto[128];
-            sprintf(texto, "Modo: %s, Resultado: %s, Duração: %.2f s", registro.modo_jogo, registro.resultado, registro.duracao);
-            al_draw_text(font, al_map_rgb(0, 0, 0), 50, y_start, ALLEGRO_ALIGN_LEFT, texto);
-            y_start += y_step;
-        }
-        fclose(arquivo);
-    } else {
-        al_draw_text(font, al_map_rgb(255, 0, 0), 364, 100, ALLEGRO_ALIGN_CENTER, "Nenhum registro encontrado.");
-    }
+    // Desenha o texto "Historico" centralizado um pouco acima do centro da tela
+    al_draw_text(font, al_map_rgb(0, 0, 0), 364, 40, ALLEGRO_ALIGN_CENTER, "Historico");
 
-    al_draw_text(font, al_map_rgb(255, 0, 0), 364, 350, ALLEGRO_ALIGN_CENTER, "Retornar ao Menu");
+    // Desenha o texto "Retornar ao Menu" na posição (160, 300) com cor vermelha
+    al_draw_text(font, al_map_rgb(255, 0, 0), 160, 300, ALLEGRO_ALIGN_CENTER, "Retornar ao Menu");
+
+    // Atualiza a tela para exibir as alterações
     al_flip_display();
 }
 
@@ -347,44 +313,35 @@ bool movimento_valido(int origem, int destino, EstadoEspaço tabuleiro[7]) {
 EstadoEspaço verificar_vitoria(EstadoEspaço tabuleiro[7]) {
     // Todas as combinações de 3 casas alinhadas possíveis
     int linhas[8][3] = {
-        {0, 1, 4}, // Esquerda
-        {0, 2, 5}, // Meio
-        {0, 3, 6}, // Direita
-        {1, 2, 3}, // Topo horizontal
-        {4, 5, 6}, // Base horizontal
-        {1, 5, 6}, // Diagonal esquerda-baixo
-        {3, 5, 4}, // Diagonal direita-baixo
-        {2, 5, 3}  // Centro para direita
+        {0, 1, 4}, {0, 2, 5}, {0, 3, 6},
+        {1, 2, 3}, {4, 5, 6}, {1, 5, 6},
+        {3, 5, 4}, {2, 5, 3}
     };
+
     for (int i = 0; i < 8; i++) {
         int a = linhas[i][0], b = linhas[i][1], c = linhas[i][2];
         if (tabuleiro[a] != VAZIO &&
             tabuleiro[a] == tabuleiro[b] &&
             tabuleiro[a] == tabuleiro[c]) {
-            return tabuleiro[a];
+            return tabuleiro[a]; // Retorna o jogador que venceu
         }
     }
-    return VAZIO;
+    return VAZIO; // Retorna VAZIO se não houver vencedor
 }
+
+
 void empate_final(ALLEGRO_FONT *font, int win_w, int win_h) {
+    // Define a posição do popup
     // Fundo semi-transparente
     al_draw_filled_rectangle(0, 0, win_w, win_h, al_map_rgba(0, 0, 0, 180));
-    
-    // Retângulo do popup
+    // Retângulo do popup (apenas números literais, sem variáveis)
     al_draw_filled_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(240, 240, 255));
-    al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0, 0, 0), 3);
+    al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0,0,0), 3);
 
     // Mensagem centralizada
     al_draw_text(font, al_map_rgb(0, 120, 0), 364, 175, ALLEGRO_ALIGN_CENTER, "Empate! Ambos os jogadores concordaram em empatar.");
     al_draw_text(font, al_map_rgb(80, 80, 80), 364, 215, ALLEGRO_ALIGN_CENTER, "Clique para fechar");
     al_flip_display();
-
-    // Registrar o empate
-    RegistroPartida registro;
-    strcpy(registro.modo_jogo, "PvP"); // Ou "PvM" dependendo do modo
-    strcpy(registro.resultado, "Empate");
-    registro.duracao = 0; // Substitua por cálculo de duração real
-    salvar_registro(&registro);
 
     // Espera um clique para fechar o popup
     ALLEGRO_EVENT_QUEUE *popup_queue = al_create_event_queue();
@@ -399,26 +356,22 @@ void empate_final(ALLEGRO_FONT *font, int win_w, int win_h) {
 }
 
 void empate_espera(ALLEGRO_FONT *font, int win_w, int win_h) {
-    // Fundo semi-transparente
     al_draw_filled_rectangle(0, 0, win_w, win_h, al_map_rgba(0, 0, 0, 180));
-    
-    // Retângulo do popup
     al_draw_filled_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(240, 240, 255));
-    al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0, 0, 0), 3);
+    al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0,0,0), 3);
 
-    // Mensagem centralizada
     al_draw_text(font, al_map_rgb(200, 120, 0), 364, 175, ALLEGRO_ALIGN_CENTER, "Aguardando... O outro jogador também deve pedir empate.");
     al_draw_text(font, al_map_rgb(80, 80, 80), 364, 215, ALLEGRO_ALIGN_CENTER, "Clique para fechar");
     al_flip_display();
 
-    // Espera um clique para fechar o popup
     ALLEGRO_EVENT_QUEUE *popup_queue = al_create_event_queue();
     al_register_event_source(popup_queue, al_get_mouse_event_source());
     ALLEGRO_EVENT ev;
     while (1) {
         al_wait_for_event(popup_queue, &ev);
-        if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            break;
+        if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+            break; // Adicione o fechamento do loop
+        }
     }
     al_destroy_event_queue(popup_queue);
 }
@@ -666,17 +619,6 @@ void movimentacao(
             float mx = ev.mouse.x;
             float my = ev.mouse.y;
 
-            if (mx >= 290 && mx <= 438 && my >= 375 && my <= 405) { // Clique no botão "Empate"
-                empate_pedido[jogador - 1] = true; // Marca que o jogador pediu empate
-                if (empate_pedido[0] && empate_pedido[1]) { // Ambos os jogadores pediram empate
-                    empate_final(font, win_w, win_h); // Exibe a tela de empate e registra
-                    return; // Sai da função de movimentação
-                } else {
-                    empate_espera(font, win_w, win_h); // Aguarda o outro jogador
-                }
-                continue;
-            }
-
             if (mx >= 50 && mx <= 180 && my >= 378 && my <= 402) {
                 pausar_jogo(font2, win_w, win_h);
                 continue;
@@ -717,14 +659,6 @@ void movimentacao(
                                 char msg[64];
                                 sprintf(msg, "Jogador %d venceu!", vencedor);
                                 al_show_native_message_box(NULL, "Fim de Jogo", "Vitória!", msg, NULL, 0);
-
-                                 RegistroPartida registro;
-                                    strcpy(registro.modo_jogo, "PvP"); // Ou "PvM" dependendo do modo
-                                    sprintf(registro.resultado, "Jogador %d venceu", vencedor);
-                                    registro.duracao = 0; // Substitua por cálculo de duração real
-                                    salvar_registro(&registro);
-
-
                             // Dentro da função movimentacao
                             if (vencedor == JOGADOR1) (*placar_j1)++; // CORRETO: Incrementando o VALOR
                             else if (vencedor == JOGADOR2) (*placar_j2)++; // CORRETO: Incrementando o VALOR
@@ -875,6 +809,7 @@ int main(void)
         } else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) { // Clique do mouse
             mouse_x = event.mouse.x; // Atualiza coordenada X do mouse
             mouse_y = event.mouse.y; // Atualiza coordenada Y do mouse
+        }
 
             // 1. Clique no menu principal
             if (!showing_help) { // Se não está na tela de ajuda
@@ -1035,4 +970,4 @@ int main(void)
 
     return 0; // Retorna 0 para indicar sucesso
 }
-}
+
