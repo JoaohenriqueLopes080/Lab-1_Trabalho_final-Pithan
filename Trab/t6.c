@@ -51,46 +51,65 @@ void desenha_tabuleiroTriangulo(ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, 
                                 EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
                                 ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2,
                                 float mouse_x, float mouse_y, int placar_j1, int placar_j2, bool *showing_menu);
+bool processar_clique_botao(
+    float mx, float my, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
+    ALLEGRO_BITMAP *background, EstadoEspaço tabuleiro[7], int jogador, int *placar_j1, int *placar_j2,
+    RegistroPartida *historico, int *num_partidas, bool *showing_menu, time_t inicio
+);
 void desenha_menu1(ALLEGRO_BITMAP *background, ALLEGRO_FONT *font);
 void desenha_modos2(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *play_image, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h);
 void desenha_ajuda3(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *help_image, ALLEGRO_FONT *font, int win_w, int win_h);
 void desenha_historico4(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *History_image, ALLEGRO_FONT *font, int win_w, int win_h);
 
+
 // Funções de lógica do jogo
+bool executar_partida_pvp(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, 
+                         int win_w, int win_h, EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7], 
+                         ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, 
+                         RegistroPartida *historico, int *num_partidas);
+
+bool executar_partida_pvm(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, 
+                         int win_w, int win_h, EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7], 
+                         ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, 
+                         RegistroPartida *historico, int *num_partidas);
+
 bool movimento_valido(int origem, int destino, EstadoEspaço tabuleiro[7]);
 EstadoEspaço verificar_vitoria(EstadoEspaço tabuleiro[7]);
 void empate_final(ALLEGRO_FONT *font, int win_w, int win_h);
-void empate_espera(ALLEGRO_FONT *font, int win_w, int win_h, int jogador_atual, RegistroPartida *historico, int *num_partidas);
+bool empate_espera(ALLEGRO_FONT *font, int win_w, int win_h, int jogador_atual, RegistroPartida *historico, int *num_partidas, bool *showing_menu);
 void pausar_jogo(ALLEGRO_FONT *font2, int win_w, int win_h, EstadoEspaço tabuleiro[7], int jogador, int pecas_jogador1, int pecas_jogador2, time_t inicio);
 void popup_sair(ALLEGRO_FONT *font2, int win_w, int win_h, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, bool *showing_menu);
-void exibir_vitoria(ALLEGRO_FONT *font, int win_w, int win_h, int vencedor, EstadoEspaço tabuleiro[7]);
+bool exibir_vitoria(ALLEGRO_FONT *font, int win_w, int win_h, int vencedor, EstadoEspaço tabuleiro[7]);
 // Funções de IA
 int ia_escolher_jogada(EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7], int jogador_ia);
 bool ia_escolher_movimento(EstadoEspaço tabuleiro[7], int jogador_ia, int *origem, int *destino);
 
 // Funções de posicionamento e movimentação
-void posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
-                    EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
-                    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2);
+bool posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
+                    EstadoEspaço *tabuleiro, PontoTabuleiro *pontos_tabuleiro,
+                    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2,
+                    RegistroPartida *historico, int *num_partidas, bool *jogar_novamente);
 
-void posicionamento_pvm(
+bool posicionamento_pvm(
     ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
-    EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
-    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, int jogador_humano, int jogador_ia);
+    EstadoEspaço *tabuleiro, PontoTabuleiro *pontos_tabuleiro,
+    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, int jogador_humano, int jogador_ia,
+    RegistroPartida *historico, int *num_partidas, bool *jogar_novamente);
 
 void movimentacao(
     ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
-    EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
+    EstadoEspaço *tabuleiro, PontoTabuleiro *pontos_tabuleiro,
     ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2,
     int *placar_j1, int *placar_j2,
-    RegistroPartida *historico, int *num_partidas);
+    RegistroPartida *historico, int *num_partidas, bool *jogar_novamente);
 // Funções para o modo Player vs Computador
 void movimentacao_pvm(
     ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
-    EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
+    EstadoEspaço *tabuleiro, PontoTabuleiro *pontos_tabuleiro,
     ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2,
     int *placar_j1, int *placar_j2, int jogador_humano, int jogador_ia,
-    RegistroPartida *historico, int *num_partidas);
+    RegistroPartida *historico, int *num_partidas,
+    bool *jogar_novamente);
 
 // Funções de tempo
 time_t iniciar_timer();
@@ -297,10 +316,41 @@ void desenha_tabuleiroTriangulo(
     // Atualiza a tela para mostrar tudo desenhado
     al_flip_display();
 
-    if (mouse_x >= 618 && mouse_x <= 708 && mouse_y >= 378 && mouse_y <= 402) {
-        popup_sair(font2, win_w, win_h, background, font, showing_menu); // Chama o popup de saída
-    }
 }
+
+bool processar_clique_botao(
+    float mx, float my, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
+    ALLEGRO_BITMAP *background, EstadoEspaço tabuleiro[7], int jogador, int *placar_j1, int *placar_j2,
+    RegistroPartida *historico, int *num_partidas, bool *showing_menu, time_t inicio
+) {
+    // Botão "Sair"
+    if (mx >= 618 && mx <= 708 && my >= 378 && my <= 402) {
+        popup_sair(font2, win_w, win_h, background, font, showing_menu);
+        if (*showing_menu) {
+            // O jogo NÃO deve continuar
+            return false; 
+        }
+    }
+
+    // Botão "Pausar"
+    if (mx >= 50 && mx <= 180 && my >= 378 && my <= 402) {
+        pausar_jogo(font2, win_w, win_h, tabuleiro, jogador, *placar_j1, *placar_j2, inicio);
+        // O jogo DEVE continuar após a pausa
+        return true; 
+    }
+
+    // Botão "Empate"
+    if (mx >= 478 && mx <= 598 && my >= 378 && my <= 402) {
+        // A função de empate agora retorna se o jogo acabou ou não.
+        if (empate_espera(font, win_w, win_h, jogador, historico, num_partidas, showing_menu)) {
+            // Se o empate foi confirmado, o jogo NÃO deve continuar.
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 // Funções de desenho de telas
 void desenha_menu1(ALLEGRO_BITMAP *background, ALLEGRO_FONT *font) {
@@ -385,51 +435,41 @@ bool movimento_valido(int origem, int destino, EstadoEspaço tabuleiro[7]) {
 }
 
 EstadoEspaço verificar_vitoria(EstadoEspaço tabuleiro[7]) {
-    // Todas as combinações de 3 casas alinhadas possíveis
-    int linhas[8][3] = {
-        {0, 1, 4}, {0, 2, 5}, {0, 3, 6},
-        {1, 2, 3}, {4, 5, 6}, {1, 5, 6},
-        {3, 5, 4}, {2, 5, 3}
+  
+    // Comentário explicando cada linha
+    int linhas[7][3] = {
+        {0, 1, 4}, // Vertical da esquerda
+        {0, 2, 5}, // Vertical do centro
+        {0, 3, 6}, // Vertical da direita
+        {1, 2, 3}, // Horizontal de cima
+        {4, 5, 6}, // Horizontal de baixo
+        {1, 5, 2}, // Diagonal que sobe da esquerda
+        {3, 5, 2}  // Diagonal que sobe da direita
     };
-    for (int i = 0; i < 8; i++) {
-        int a = linhas[i][0], b = linhas[i][1], c = linhas[i][2];
-        if (tabuleiro[a] != VAZIO &&
-            tabuleiro[a] == tabuleiro[b] &&
-            tabuleiro[a] == tabuleiro[c]) {
+    
+    // A verificação de vitória é feita para cada uma das 7 linhas possíveis
+    for (int i = 0; i < 7; i++) {
+        int a = linhas[i][0];
+        int b = linhas[i][1];
+        int c = linhas[i][2];
+        
+        // Se as três posições não estão vazias e pertencem ao mesmo jogador
+        if (tabuleiro[a] != VAZIO && tabuleiro[a] == tabuleiro[b] && tabuleiro[a] == tabuleiro[c]) {
+            // Retorna o jogador que venceu
             return tabuleiro[a];
         }
     }
+    
+    // Se nenhum jogador venceu, retorna VAZIO
     return VAZIO;
 }
 
-void empate_final(ALLEGRO_FONT *font, int win_w, int win_h) {
+bool empate_espera(ALLEGRO_FONT *font, int win_w, int win_h, int jogador_atual, 
+                   RegistroPartida *historico, int *num_partidas, bool *showing_menu) {
+
     // Fundo semi-transparente
     al_draw_filled_rectangle(0, 0, win_w, win_h, al_map_rgba(0, 0, 0, 180));
-    // Retângulo do popup
-    al_draw_filled_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(240, 240, 255));
-    al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0,0,0), 3);
 
-    // Mensagem
-    al_draw_text(font, al_map_rgb(0, 120, 0), 364, 175, ALLEGRO_ALIGN_CENTER, "Empate! Ambos os jogadores concordaram em empatar.");
-    al_draw_text(font, al_map_rgb(80, 80, 80), 364, 215, ALLEGRO_ALIGN_CENTER, "Clique para fechar");
-    al_flip_display();
-
-    // Espera um clique para fechar
-    ALLEGRO_EVENT_QUEUE *popup_queue = al_create_event_queue();
-    al_register_event_source(popup_queue, al_get_mouse_event_source());
-    ALLEGRO_EVENT ev;
-    while (1) {
-        al_wait_for_event(popup_queue, &ev);
-        if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            break;
-    }
-    al_destroy_event_queue(popup_queue);
-}
-
-void empate_espera(ALLEGRO_FONT *font, int win_w, int win_h, int jogador_atual, RegistroPartida *historico, int *num_partidas) {
-    // Fundo semi-transparente
-    al_draw_filled_rectangle(0, 0, win_w, win_h, al_map_rgba(0, 0, 0, 180));
-    
     // Retângulo do popup
     al_draw_filled_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(240, 240, 255));
     al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0, 0, 0), 3);
@@ -438,7 +478,6 @@ void empate_espera(ALLEGRO_FONT *font, int win_w, int win_h, int jogador_atual, 
     char msg[64];
     sprintf(msg, "Jogador %d pediu empate", jogador_atual);
     al_draw_text(font, al_map_rgb(200, 120, 0), 364, 175, ALLEGRO_ALIGN_CENTER, msg);
-    al_draw_text(font, al_map_rgb(80, 80, 80), 364, 215, ALLEGRO_ALIGN_CENTER, "Aguardando o outro jogador confirmar");
 
     // Botão "Confirmar Empate"
     al_draw_filled_rounded_rectangle(264, 215, 464, 255, 10, 10, al_map_rgb(240, 255, 240));
@@ -447,36 +486,41 @@ void empate_espera(ALLEGRO_FONT *font, int win_w, int win_h, int jogador_atual, 
 
     al_flip_display();
 
-    // Espera o clique no botão "Confirmar Empate"
     ALLEGRO_EVENT_QUEUE *popup_queue = al_create_event_queue();
     al_register_event_source(popup_queue, al_get_mouse_event_source());
     ALLEGRO_EVENT ev;
+
     while (1) {
         al_wait_for_event(popup_queue, &ev);
         if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
             float mx = ev.mouse.x;
             float my = ev.mouse.y;
 
-            // Verifica se o clique foi dentro do botão "Confirmar Empate"
             if (mx >= 264 && mx <= 464 && my >= 215 && my <= 255) {
-                printf("Empate confirmado pelo outro jogador.\n");
+                // Exibe a mensagem de confirmação final
+               printf("Empate confirmado. Retornando ao menu principal.\n");
 
-                // Chama a função empate_final
-                empate_final(font, win_w, win_h);
-
-                // Salva o histórico de empate
+                // Registra o histórico
                 strcpy(historico[*num_partidas].modo_jogo, "PvP");
                 strcpy(historico[*num_partidas].resultado, "Empate");
-                historico[*num_partidas].duracao = 0; // Pode ser ajustado para incluir a duração real
+                historico[*num_partidas].duracao = 0;
                 (*num_partidas)++;
-
                 salvar_historico("historico.txt", historico, *num_partidas);
 
-                break; // Sai do loop e retorna ao jogo
+                // Sinaliza para mostrar o menu e que a partida deve terminar
+                *showing_menu = true;
+                al_destroy_event_queue(popup_queue);
+                return true; // Retorna 'true' para indicar que o empate foi confirmado
             }
         }
+         // Adicionar lógica para fechar a janela, se necessário
+        if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            break;
+        }
     }
+
     al_destroy_event_queue(popup_queue);
+    return false; // Retorna 'false' se o popup foi fechado sem confirmar
 }
 
 // Função para exibir la tela de pausa do jogo
@@ -555,6 +599,7 @@ void popup_sair(ALLEGRO_FONT *font2, int win_w, int win_h, ALLEGRO_BITMAP *backg
             if (mx >= 264 && mx <= 364 && my >= 215 && my <= 255) {
                 printf("Retornando ao menu principal.\n");
                 *showing_menu = true; // Retorna ao menu principal
+                desenha_menu1(background, font); // Desenha o menu principal
                 al_destroy_event_queue(popup_queue);
                 return; // Sai do loop
             }
@@ -573,7 +618,7 @@ void popup_sair(ALLEGRO_FONT *font2, int win_w, int win_h, ALLEGRO_BITMAP *backg
 
 
 
-void exibir_vitoria(ALLEGRO_FONT *font, int win_w, int win_h, int vencedor, EstadoEspaço tabuleiro[7]) {
+bool exibir_vitoria(ALLEGRO_FONT *font, int win_w, int win_h, int vencedor, EstadoEspaço tabuleiro[7]) {
     // Fundo semi-transparente
     al_draw_filled_rectangle(0, 0, win_w, win_h, al_map_rgba(0, 0, 0, 180));
     
@@ -581,7 +626,7 @@ void exibir_vitoria(ALLEGRO_FONT *font, int win_w, int win_h, int vencedor, Esta
     al_draw_filled_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(240, 240, 255));
     al_draw_rounded_rectangle(164, 145, 564, 265, 20, 20, al_map_rgb(0, 0, 0), 3);
 
-    // Mensagem de vitória
+     // Mensagem de vitória
     char msg[64];
     sprintf(msg, "Vencedor: Jogador %d", vencedor);
     al_draw_text(font, al_map_rgb(0, 120, 0), 364, 175, ALLEGRO_ALIGN_CENTER, msg);
@@ -593,149 +638,182 @@ void exibir_vitoria(ALLEGRO_FONT *font, int win_w, int win_h, int vencedor, Esta
 
     al_flip_display();
 
-    // Espera o clique no botão para retornar ao jogo
     ALLEGRO_EVENT_QUEUE *popup_queue = al_create_event_queue();
     al_register_event_source(popup_queue, al_get_mouse_event_source());
     ALLEGRO_EVENT ev;
+
     while (1) {
         al_wait_for_event(popup_queue, &ev);
         if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
             float mx = ev.mouse.x;
             float my = ev.mouse.y;
 
-            // Verifica se o clique foi dentro do botão "Jogar Novamente"
             if (mx >= 264 && mx <= 464 && my >= 215 && my <= 255) {
                 printf("Reiniciando Partida.\n");
-
-                // Reinicia o tabuleiro
-                for (int i = 0; i < 7; i++) {
-                    tabuleiro[i] = VAZIO;
-                }
-
-                break; // Sai do loop e retorna ao jogo
+                al_destroy_event_queue(popup_queue);
+                // ALTERAÇÃO: Retorna 'true' para sinalizar que uma nova partida deve começar.
+                return true;
             }
         }
     }
+    // Essa parte não deve ser alcançada, mas é bom ter um retorno padrão.
     al_destroy_event_queue(popup_queue);
+    return false;
 }
 
 
 
 // Função para implementar IA simples
 int ia_escolher_jogada(EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7], int jogador_ia) {
-    // 1. Tenta vencer
-    for (int i = 0; i < 7; i++) {
-        if (tabuleiro[i] == VAZIO) {
-            tabuleiro[i] = jogador_ia;
-            if (verificar_vitoria(tabuleiro) == jogador_ia) {
-                tabuleiro[i] = VAZIO;
-                return i;
-            }
-            tabuleiro[i] = VAZIO;
-        }
-    }
-
-    // 2. Tenta bloquear
     int oponente = (jogador_ia == JOGADOR1) ? JOGADOR2 : JOGADOR1;
+
+    // --- 1. PRIORIDADE MÁXIMA: Vencer o jogo ---
+    // Verifica se a IA pode colocar uma peça e ganhar a partida nesta jogada.
     for (int i = 0; i < 7; i++) {
         if (tabuleiro[i] == VAZIO) {
-            tabuleiro[i] = oponente;
+            tabuleiro[i] = jogador_ia; // Simula a jogada
+            if (verificar_vitoria(tabuleiro) == jogador_ia) {
+                tabuleiro[i] = VAZIO; // Desfaz a simulação
+                return i; // Encontrou a jogada da vitória!
+            }
+            tabuleiro[i] = VAZIO; // Desfaz a simulação
+        }
+    }
+
+    // --- 2. PRIORIDADE ALTA: Bloquear o oponente ---
+    // Verifica se o oponente pode ganhar na próxima jogada e joga na casa para bloqueá-lo.
+    for (int i = 0; i < 7; i++) {
+        if (tabuleiro[i] == VAZIO) {
+            tabuleiro[i] = oponente; // Simula a jogada do oponente
             if (verificar_vitoria(tabuleiro) == oponente) {
-                tabuleiro[i] = VAZIO;
+                tabuleiro[i] = VAZIO; // Desfaz a simulação
+                return i; // Encontrou a jogada de bloqueio!
+            }
+            tabuleiro[i] = VAZIO; // Desfaz a simulação
+        }
+    }
+
+    // --- 3. PRIORIDADE MÉDIA: Criar uma ameaça (dois em linha) ---
+    // Tenta formar uma linha com duas peças da IA e um espaço vazio,
+    // preparando uma vitória para a próxima jogada.
+    for (int i = 0; i < 7; i++) {
+        if (tabuleiro[i] == VAZIO) {
+            tabuleiro[i] = jogador_ia; // Simula a jogada
+            // Vamos verificar se essa jogada cria uma ameaça sem dar a vitória imediata ao oponente
+            bool cria_ameaca = false;
+            // Para ser uma boa ameaça, o oponente não pode ganhar logo em seguida
+            bool oponente_venceria = false;
+
+            // Testa se a IA criou uma linha de 2
+            // (Isso é uma simplificação. Uma checagem completa seria mais complexa,
+            // mas para o nosso nível, priorizar posições estratégicas funciona bem)
+            if (i == 2 || i == 5 || i == 0) { // Posições que participam de mais linhas
+                cria_ameaca = true;
+            }
+
+            tabuleiro[i] = VAZIO; // Desfaz a simulação
+            if (cria_ameaca && !oponente_venceria) {
                 return i;
             }
-            tabuleiro[i] = VAZIO;
         }
     }
 
-    // 3. Prioriza posições estratégicas
-    if (tabuleiro[2] == VAZIO) return 2; // Centro
-    if (tabuleiro[5] == VAZIO) return 5; // Centro inferior
+    // --- 4. PRIORIDADE BAIXA: Ocupar posições estratégicas ---
+    // Se nenhuma das jogadas acima for possível, a IA escolhe a melhor posição estratégica livre.
+    // A ordem de prioridade se baseia em quantas linhas cada posição participa.
+    int posicoes_estrategicas[] = {2, 0, 5, 1, 3}; // Centro, topo, centro-baixo, cantos superiores
+    for (int i = 0; i < 5; i++) {
+        int pos = posicoes_estrategicas[i];
+        if (tabuleiro[pos] == VAZIO) {
+            return pos;
+        }
+    }
 
-    // 4. Joga aleatoriamente
-    int posicoes_validas[7];
-    int num_validas = 0;
+    // --- 5. ÚLTIMO RECURSO: Jogar na primeira casa vazia ---
+    // Se tudo falhar, apenas para garantir que o jogo não trave,
+    // a IA joga na primeira casa vazia que encontrar. Isso evita a aleatoriedade. 
     for (int i = 0; i < 7; i++) {
         if (tabuleiro[i] == VAZIO) {
-            posicoes_validas[num_validas++] = i;
+            return i;
         }
     }
-    if (num_validas > 0) {
-        return posicoes_validas[rand() % num_validas];
-    }
-    return -1; // Sem jogada válida
+
+    return -1; // Não deveria acontecer em um jogo normal.
 }
 
-// Função para IA escolher movimento
 bool ia_escolher_movimento(EstadoEspaço tabuleiro[7], int jogador_ia, int *origem, int *destino) {
-    // 1. Tenta vencer
-    for (int i = 0; i < 7; i++) {
+    int oponente = (jogador_ia == JOGADOR1) ? JOGADOR2 : JOGADOR1;
+
+    // --- 1. PRIORIDADE MÁXIMA: Mover para ganhar o jogo ---
+    for (int i = 0; i < 7; i++) { // 'i' é a casa de origem da peça
         if (tabuleiro[i] == jogador_ia) {
-            for (int j = 0; j < 7; j++) {
+            for (int j = 0; j < 7; j++) { // 'j' é a casa de destino
                 if (movimento_valido(i, j, tabuleiro)) {
-                    EstadoEspaço temp = tabuleiro[j];
-                    tabuleiro[j] = tabuleiro[i];
+                    // Simula o movimento
+                    tabuleiro[j] = jogador_ia;
                     tabuleiro[i] = VAZIO;
                     if (verificar_vitoria(tabuleiro) == jogador_ia) {
-                        tabuleiro[i] = tabuleiro[j];
-                        tabuleiro[j] = temp;
+                        tabuleiro[i] = jogador_ia; // Desfaz a simulação
+                        tabuleiro[j] = VAZIO;
                         *origem = i;
                         *destino = j;
-                        return true;
+                        return true; // Encontrou o movimento da vitória!
                     }
-                    tabuleiro[i] = tabuleiro[j];
-                    tabuleiro[j] = temp;
+                    tabuleiro[i] = jogador_ia; // Desfaz a simulação
+                    tabuleiro[j] = VAZIO;
                 }
             }
         }
     }
 
-    // 2. Tenta bloquear
-    int oponente = (jogador_ia == JOGADOR1) ? JOGADOR2 : JOGADOR1;
+    // --- 2. PRIORIDADE ALTA: Mover para bloquear o oponente ---
     for (int i = 0; i < 7; i++) {
-        if (tabuleiro[i] == jogador_ia) {
+        if (tabuleiro[i] == oponente) {
             for (int j = 0; j < 7; j++) {
                 if (movimento_valido(i, j, tabuleiro)) {
-                    EstadoEspaço temp = tabuleiro[j];
-                    tabuleiro[j] = tabuleiro[i];
+                    // Simula o movimento do oponente para ver se ele ganharia
+                    tabuleiro[j] = oponente;
                     tabuleiro[i] = VAZIO;
-                    bool bloqueia = false;
-                    for (int k = 0; k < 7; k++) {
-                        if (tabuleiro[k] == VAZIO) {
-                            tabuleiro[k] = oponente;
-                            if (verificar_vitoria(tabuleiro) == oponente) {
-                                bloqueia = true;
+                    if (verificar_vitoria(tabuleiro) == oponente) {
+                        // O oponente pode ganhar movendo de 'i' para 'j'.
+                        // A IA precisa mover uma de suas peças para a casa 'j' para bloquear.
+                        tabuleiro[i] = oponente; // Desfaz simulação
+                        tabuleiro[j] = VAZIO;
+
+                        // Agora, encontra uma peça da IA que possa mover para 'j'
+                        for (int ia_origem = 0; ia_origem < 7; ia_origem++) {
+                            if (tabuleiro[ia_origem] == jogador_ia && movimento_valido(ia_origem, j, tabuleiro)) {
+                                *origem = ia_origem;
+                                *destino = j;
+                                return true; // Encontrou o movimento de bloqueio!
                             }
-                            tabuleiro[k] = VAZIO;
-                            if (bloqueia) break;
                         }
                     }
-                    tabuleiro[i] = tabuleiro[j];
-                    tabuleiro[j] = temp;
-                    if (bloqueia) {
-                        *origem = i;
-                        *destino = j;
-                        return true;
-                    }
+                    tabuleiro[i] = oponente; // Desfaz a simulação
+                    tabuleiro[j] = VAZIO;
                 }
             }
         }
     }
 
-    // 3. Prioriza posições estratégicas
+    // --- 3. PRIORIDADE MÉDIA: Mover para criar uma ameaça ---
+    // Tenta mover uma peça para formar uma linha com duas peças e um espaço vazio.
     for (int i = 0; i < 7; i++) {
         if (tabuleiro[i] == jogador_ia) {
-            for (int j = 0; j < 7; j++) {
-                if (movimento_valido(i, j, tabuleiro) && (j == 2 || j == 5)) { // Centro ou centro inferior
+            int posicoes_estrategicas[] = {2, 0, 5, 1, 3, 4, 6}; // Tenta mover para as melhores posições
+            for (int k = 0; k < 7; k++) {
+                int j = posicoes_estrategicas[k];
+                if (movimento_valido(i, j, tabuleiro)) {
                     *origem = i;
                     *destino = j;
-                    return true;
+                    return true; // Encontrou um bom movimento estratégico
                 }
             }
         }
     }
 
-    // 4. Move aleatoriamente
+    // --- 4. ÚLTIMO RECURSO: Fazer o primeiro movimento válido encontrado ---
+    // Garante que a IA sempre jogue, evitando aleatoriedade. 
     for (int i = 0; i < 7; i++) {
         if (tabuleiro[i] == jogador_ia) {
             for (int j = 0; j < 7; j++) {
@@ -747,12 +825,16 @@ bool ia_escolher_movimento(EstadoEspaço tabuleiro[7], int jogador_ia, int *orig
             }
         }
     }
-    return false;
+
+    return false; // Nenhum movimento válido encontrado.
 }
 
-void posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
-    EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
-    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2) {
+
+bool posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
+                    EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
+                    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2,
+                    RegistroPartida *historico, int *num_partidas,
+                    bool *jogar_novamente) {
    
     time_t inicio = iniciar_timer();
     int jogador_atual = JOGADOR1;
@@ -775,10 +857,14 @@ void posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLE
             float mx_click = event.mouse.x;
             float my_click = event.mouse.y;
 
-            if (mx_click >= 50 && mx_click <= 180 && my_click >= 378 && my_click <= 402) {
-                pausar_jogo(font2, win_w, win_h, tabuleiro, jogador_atual, pecas_jogador1, pecas_jogador2, inicio);
-                continue;
+           // Processa os cliques nos botões
+        bool jogo_continua = processar_clique_botao(mx, my, font, font2, win_w, win_h, background, tabuleiro, jogador_atual, placar_j1, placar_j2, historico, num_partidas, &showing_menu, time(NULL));
+             if (!jogo_continua) {
+                return false; 
             }
+        if (showing_menu) {
+            return false; // Retorna ao menu principal
+        }
 
             for (int i = 0; i < 7; i++) {
                 float dx = mx_click - pontos_tabuleiro[i].x;
@@ -792,10 +878,16 @@ void posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLE
 
                         EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
                        if (vencedor != VAZIO) {
-                            exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
+                            double duracao = calcular_duracao(inicio);
+                            printf("Duração da partida: %.2f segundos\n", duracao);
+
+
+                            
                             if (vencedor == JOGADOR1) (*placar_j1)++;
                             else if (vencedor == JOGADOR2) (*placar_j2)++;
-                            return;
+
+                            *jogar_novamente = exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
+                            return false;
                         }
 
                         jogador_atual = (jogador_atual == JOGADOR1) ? JOGADOR2 : JOGADOR1;
@@ -808,75 +900,137 @@ void posicionamento(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLE
             posicionando = false;
         }
     }
-
-    double duracao = calcular_duracao(inicio);
-    printf("Duração da partida: %.2f segundos\n", duracao);
+    printf("Fase de posicionamento concluída. Iniciando movimentação.\n");
+    return true;
+   
 
 }
 
-void posicionamento_pvm(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
+bool posicionamento_pvm(
+    ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
     EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
-    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, int jogador_humano, int jogador_ia) {
-   
+    ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, int jogador_humano, int jogador_ia,
+    RegistroPartida *historico, int *num_partidas,
+    bool *jogar_novamente) {
+
+    // Variáveis de controle para esta fase
     time_t inicio = iniciar_timer();
-    int pecas_jogador1 = 0, pecas_jogador2 = 0;
+    int pecas_humano = 0;
+    int pecas_ia = 0;
     bool posicionando = true;
-    float mx = 0, my = 0;
-    int jogador_atual = jogador_humano; // Começa com o jogador humano
+    float mx_hover = 0, my_hover = 0; // Coordenadas para o efeito de hover do mouse
+    int jogador_atual = jogador_humano; // O jogador humano sempre começa
 
+    // Loop principal da fase de posicionamento
     while (posicionando) {
-        bool showing_menu = false;
-        desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, mx, my, *placar_j1, *placar_j2, &showing_menu);
-        ALLEGRO_EVENT event;
-        al_wait_for_event(queue, &event);
+        
+        bool showing_menu_flag_local = false; // Flag para a função de desenho
 
-        if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-            mx = event.mouse.x;
-            my = event.mouse.y;
-        }
+        // O turno do humano é controlado por eventos (espera o clique)
+        if (jogador_atual == jogador_humano) {
+            
+            // Redesenha o tabuleiro a cada frame para o efeito de hover
+            desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, 
+                                       peca_player1, peca_player2, mx_hover, my_hover, *placar_j1, *placar_j2, &showing_menu_flag_local);
 
-        if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogador_atual == jogador_humano) {
-            float mx_click = event.mouse.x;
-            float my_click = event.mouse.y;
+            ALLEGRO_EVENT event;
+            al_wait_for_event(queue, &event); // O jogo para aqui, esperando a ação do humano
 
-            if (mx_click >= 50 && mx_click <= 180 && my_click >= 378 && my_click <= 402) {
-                pausar_jogo(font2, win_w, win_h, tabuleiro, jogador_humano, pecas_jogador1, pecas_jogador2, inicio);
-                continue;
+            if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                *jogar_novamente = false;
+                // A partida acabou porque o usuário fechou a janela.
+                return false;
             }
 
-            // Jogador humano posiciona suas peças
-            if (pecas_jogador1 < 3) {
+            if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+                mx_hover = event.mouse.x;
+                my_hover = event.mouse.y;
+                continue; // Volta ao início do loop para redesenhar com o hover
+            }
+
+            if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+                float mx_click = event.mouse.x;
+                float my_click = event.mouse.y;
+
+                // Processa cliques em botões (Pausar, Sair, etc.)
+                if (!processar_clique_botao(mx_click, my_click, font, font2, win_w, win_h, background, tabuleiro, jogador_atual, 
+                                            placar_j1, placar_j2, historico, num_partidas, &showing_menu_flag_local, time(NULL))) {
+                    // Se processar_clique_botao retornar false, o usuário quer ir ao menu.
+                    // A partida acabou.
+                    return false;
+                }
+
+                // Lógica para posicionar a peça do humano
                 for (int i = 0; i < 7; i++) {
                     float dx = mx_click - pontos_tabuleiro[i].x;
                     float dy = my_click - pontos_tabuleiro[i].y;
-                    if (dx * dx + dy * dy <= 25 * 25 && tabuleiro[i] == VAZIO) {
+                    if (dx*dx + dy*dy <= 25*25 && tabuleiro[i] == VAZIO) {
                         tabuleiro[i] = jogador_humano;
-                        pecas_jogador1++;
-                        jogador_atual = jogador_ia; // Alterna para o jogador IA
-                        break;
+                        pecas_humano++;
+
+                        // Verifica se o humano venceu logo no posicionamento
+                        EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
+                        if (vencedor != VAZIO) {
+            
+                        
+                        double duracao = calcular_duracao(inicio);
+                        printf("Duração da partida: %.2f segundos\n", duracao);
+
+                        if (vencedor == JOGADOR1) (*placar_j1)++; else (*placar_j2)++;
+                        
+                        *jogar_novamente = exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
+                        
+                        return false; // A partida acabou.
+                        }
+                        
+                        // Passa a vez para a IA
+                        jogador_atual = jogador_ia;
+                        break; // Sai do loop 'for' após uma jogada válida
                     }
                 }
             }
-        }
+        } 
+        // O turno da IA é automático, sem esperar por eventos
+        else if (jogador_atual == jogador_ia) {
+            
+            printf("IA está posicionando sua peça...\n");
+            desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, -1, -1, *placar_j1, *placar_j2, &showing_menu_flag_local);
+            al_rest(0.5); // Pequena pausa para o movimento não ser instantâneo
 
-        // Jogador IA posiciona suas peças automaticamente
-        if (jogador_atual == jogador_ia && pecas_jogador2 < 3) {
             int posicao = ia_escolher_jogada(tabuleiro, pontos_tabuleiro, jogador_ia);
             if (posicao != -1) {
                 tabuleiro[posicao] = jogador_ia;
-                pecas_jogador2++;
-                jogador_atual = jogador_humano; // Alterna para o jogador humano
+                pecas_ia++;
+
+                // Verifica se a IA venceu logo no posicionamento
+                EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
+                if (vencedor != VAZIO) {
+          
+            double duracao = calcular_duracao(inicio);
+            printf("Duração da partida: %.2f segundos\n", duracao);
+
+            if (vencedor == JOGADOR1) (*placar_j1)++; else (*placar_j2)++;
+            
+            *jogar_novamente = exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
+            
+            return false; // A partida acabou.
+                }
             }
+            
+            // Passa a vez de volta para o humano
+            jogador_atual = jogador_humano;
         }
 
-        // Finaliza o posicionamento após ambos os jogadores terem colocado 3 peças
-        if (pecas_jogador1 == 3 && pecas_jogador2 == 3) {
+        // Condição para terminar a fase de posicionamento
+        if (pecas_humano == 3 && pecas_ia == 3) {
             posicionando = false;
         }
     }
 
-    double duracao = calcular_duracao(inicio);
-    printf("Duração da partida: %.2f segundos\n", duracao);
+    printf("Fase de posicionamento concluída. Iniciando movimentação.\n");
+    // Se o loop 'while' terminou, o posicionamento foi concluído com sucesso.
+    // O jogo deve continuar para a fase de movimentação.
+    return true;
 }
 
 
@@ -885,7 +1039,8 @@ void movimentacao(
     EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
     ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2,
     int *placar_j1, int *placar_j2,
-    RegistroPartida *historico, int *num_partidas) {
+    RegistroPartida *historico, int *num_partidas,
+    bool *jogar_novamente) {
 
     bool empate_pedido[2] = {false, false};
     int jogador = JOGADOR1;
@@ -906,21 +1061,17 @@ void movimentacao(
         if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
             float mx = ev.mouse.x;
             float my = ev.mouse.y;
+        // Guarda o resultado da função em uma variável
+                    bool jogo_continua = processar_clique_botao(mx, my, font, font2, win_w, win_h, background, tabuleiro, jogador, placar_j1, placar_j2, historico, num_partidas, &showing_menu, time(NULL));
 
-            if (mx >= 50 && mx <= 180 && my >= 378 && my <= 402) {
-                pausar_jogo(font2, win_w, win_h, tabuleiro, jogador, *placar_j1, *placar_j2, time(NULL));
-                continue;
-            }
+                    // Se a função avisou que é para parar, a gente dá um return para sair do loop while(1)
+                    if (!jogo_continua) {
+                        return; 
+                    }
 
-            if (mx >= 478 && mx <= 598 && my >= 378 && my <= 402) { // Botão "Empate"
-                empate_pedido[jogador - 1] = true; // Marca que o jogador atual pediu empate
-
-                if (empate_pedido[0] && empate_pedido[1]) { // Ambos os jogadores pediram empate
-                    empate_espera(font, win_w, win_h, jogador, historico, num_partidas); // Chama empate_espera
-                    return; // Termina a partida
-                }
-                continue; // Continua o loop
-            }
+                    if (showing_menu) {
+                        return; // Retorna ao menu principal
+                    }
 
             // Verifica se o jogador selecionou uma peça
             if (selecionada == -1) {
@@ -963,98 +1114,136 @@ void movimentacao(
     }
 }
 
+// Função de movimentação para o modo Player vs Máquina (VERSÃO CORRIGIDA)
 void movimentacao_pvm(
     ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, int win_w, int win_h,
     EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7],
     ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2,
     int *placar_j1, int *placar_j2, int jogador_humano, int jogador_ia,
-    RegistroPartida *historico, int *num_partidas) {
-
-    int jogador = jogador_humano; // Começa com o jogador humano
+    RegistroPartida *historico, int *num_partidas,
+    bool *jogar_novamente
+) {
+    int jogador_atual = jogador_humano;
     int selecionada = -1;
     float mouse_x = 0, mouse_y = 0;
+    bool showing_menu = false;
 
-    while (1) {
-        bool showing_menu = false;
-        desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, mouse_x, mouse_y, *placar_j1, *placar_j2, &showing_menu);
-        ALLEGRO_EVENT ev;
-        al_wait_for_event(queue, &ev);
+    // O loop principal do jogo. Ele só termina quando a partida acaba. 
+    while (true) {
+        
+        if (jogador_atual == jogador_humano) {
+            
+            desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, mouse_x, mouse_y, *placar_j1, *placar_j2, &showing_menu);
 
-        if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
-            mouse_x = ev.mouse.x;
-            mouse_y = ev.mouse.y;
-        }
+            ALLEGRO_EVENT ev;
+            // IMPORTANTE: O jogo PARA AQUI e espera por uma ação do humano.
+            // Esta chamada está DENTRO do 'if' do turno do humano. 
+            al_wait_for_event(queue, &ev);
 
-        if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-            float mx = ev.mouse.x;
-            float my = ev.mouse.y;
-
-            if (mx >= 478 && mx <= 598 && my >= 378 && my <= 402) { // Botão "Empate"
-                empate_espera(font, win_w, win_h, jogador, historico, num_partidas); // Chama empate_espera
-                return; // Termina a partida
+            // Se o humano fechou a janela, encerramos tudo.
+            if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                *jogar_novamente = false;
+                return;
             }
 
-            // Jogador humano faz sua jogada
-            if (jogador == jogador_humano) {
+            // Atualiza as coordenadas do mouse para o efeito de 'hover'.
+            if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
+                mouse_x = ev.mouse.x;
+                continue; // Pula para a próxima iteração do loop para redesenhar.
+            }
+            
+            // Se o humano CLICOU...
+            if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+                float mx = ev.mouse.x;
+                float my = ev.mouse.y;
+
+                // Guarda o resultado da função em uma variável
+            bool jogo_continua = processar_clique_botao(mx, my, font, font2, win_w, win_h, background, tabuleiro, jogador_atual, placar_j1, placar_j2, historico, num_partidas, &showing_menu, time(NULL));
+
+            // Se a função avisou que é para parar, a gente dá um return para sair do loop while(1)
+            if (!jogo_continua) {
+                return; 
+            }
+
+            if (showing_menu) {
+                return; // Retorna ao menu principal
+             }
+                
+                // Lógica para selecionar e mover a peça do humano...
                 if (selecionada == -1) {
                     for (int i = 0; i < 7; i++) {
-                        float dx = mx - pontos_tabuleiro[i].x;
-                        float dy = my - pontos_tabuleiro[i].y;
-                        if (dx * dx + dy * dy <= 25 * 25 && tabuleiro[i] == jogador) {
+                        float dx = mx - pontos_tabuleiro[i].x; float dy = my - pontos_tabuleiro[i].y;
+                        if (dx * dx + dy * dy <= 25 * 25 && tabuleiro[i] == jogador_atual) {
                             selecionada = i;
                             break;
                         }
                     }
                 } else {
                     for (int i = 0; i < 7; i++) {
-                        float dx = mx - pontos_tabuleiro[i].x;
-                        float dy = my - pontos_tabuleiro[i].y;
-                        if (dx * dx + dy * dy <= 25 * 25 && tabuleiro[i] == VAZIO) {
-                            if (movimento_valido(selecionada, i, tabuleiro)) {
-                                tabuleiro[i] = jogador;
-                                tabuleiro[selecionada] = VAZIO;
+                        float dx = mx - pontos_tabuleiro[i].x; float dy = my - pontos_tabuleiro[i].y;
+                        if (dx * dx + dy * dy <= 25 * 25 && tabuleiro[i] == VAZIO && movimento_valido(selecionada, i, tabuleiro)) {
+                            tabuleiro[i] = jogador_atual;
+                            tabuleiro[selecionada] = VAZIO;
 
-                                EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
-                                if (vencedor != VAZIO) {
-                                    exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
-                                    if (vencedor == JOGADOR1) (*placar_j1)++;
-                                    else if (vencedor == JOGADOR2) (*placar_j2)++;
-                                    return;
-                                }
-
-                                selecionada = -1;
-                                jogador = jogador_ia; // Passa a vez para o computador
-                            } else {
-                                selecionada = -1;
+                            // Verifica se o humano venceu
+                            EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
+                            if (vencedor != VAZIO) {
+                                desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, mx, my, *placar_j1, *placar_j2, &showing_menu);
+                                if (vencedor == JOGADOR1) (*placar_j1)++; else (*placar_j2)++;
+                                *jogar_novamente = exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
+                                return;
                             }
-                            break;
+                            
+                            // PASSA A VEZ PARA A IA
+                            selecionada = -1;
+                            jogador_atual = jogador_ia;
+                            break; // Sai do for loop
                         }
                     }
+                     // Se o jogador clicou em um lugar inválido ou na mesma peça, deseleciona.
                     selecionada = -1;
                 }
-            }
+            } // Fim do if de clique do mouse
+        }
+        // =========================================================================
+        // PARTE 2: LÓGICA DO TURNO DA IA
+        // =========================================================================
+        else if (jogador_atual == jogador_ia) {
+            // IMPORTANTE: NÃO há 'al_wait_for_event' aqui. O código roda direto.
+            printf("IA está pensando...\n");
+            
+            // Redesenha o tabuleiro para mostrar o estado antes da jogada da IA.
+            desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, mouse_x, mouse_y, *placar_j1, *placar_j2, &showing_menu);
+            
+            // Uma pequena pausa para o movimento da IA não ser instantâneo.
+            al_rest(1.0); 
 
-            // Computador faz sua jogada automaticamente
-            if (jogador == jogador_ia) {
-                int origem, destino;
-                if (ia_escolher_movimento(tabuleiro, jogador_ia, &origem, &destino)) {
-                    tabuleiro[destino] = jogador_ia;
-                    tabuleiro[origem] = VAZIO;
+            int origem, destino;
+            if (ia_escolher_movimento(tabuleiro, jogador_ia, &origem, &destino)) {
+                tabuleiro[destino] = jogador_ia;
+                tabuleiro[origem] = VAZIO;
+                printf("IA moveu de %d para %d.\n", origem, destino);
 
-                    EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
-                    if (vencedor != VAZIO) {
-                        exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
-                        if (vencedor == JOGADOR1) (*placar_j1)++;
-                        else if (vencedor == JOGADOR2) (*placar_j2)++;
-                        return;
-                    }
-
-                    jogador = jogador_humano; // Passa a vez para o jogador humano
+                // Verifica se a IA venceu.
+                EstadoEspaço vencedor = verificar_vitoria(tabuleiro);
+                if (vencedor != VAZIO) {
+                    desenha_tabuleiroTriangulo(background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, mouse_x, mouse_y, *placar_j1, *placar_j2, &showing_menu);
+                    if (vencedor == JOGADOR1) (*placar_j1)++; else (*placar_j2)++;
+                    *jogar_novamente = exibir_vitoria(font, win_w, win_h, vencedor, tabuleiro);
+                    return;
                 }
+
+                // PASSA A VEZ PARA O HUMANO
+                jogador_atual = jogador_humano;
+            } else {
+                printf("ERRO: IA não encontrou um movimento válido.\n");
+                *jogar_novamente = false;
+                return; // Encerra o jogo se a IA travar.
             }
         }
-    }
+    } // Fim do while(true)
 }
+
 
 
 
@@ -1100,8 +1289,52 @@ double calcular_duracao(time_t inicio) {
 
 
 
+bool executar_partida_pvp(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, 
+                         int win_w, int win_h, EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7], 
+                         ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, 
+                         RegistroPartida *historico, int *num_partidas) {
+    
+    // Esta variável guardará a decisão final do jogador (jogar novamente ou não).
+    // Ela será passada por ponteiro para 'posicionamento' e 'movimentacao'.
+    bool decisao_jogar_novamente = false;
+
+    // --- FASE 1: POSICIONAMENTO ---
+    // Chamamos 'posicionamento'. Se ela retornar 'true', significa que o jogo não
+    // acabou e devemos continuar para a fase de movimentação.
+    if (posicionamento(queue, background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, 
+                       peca_player1, peca_player2, placar_j1, placar_j2, historico, num_partidas, &decisao_jogar_novamente)) {
+        
+        // --- FASE 2: MOVIMENTAÇÃO ---
+        // Este bloco só é executado se o jogo não terminou no posicionamento.
+        movimentacao(queue, background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, 
+                     peca_player1, peca_player2, placar_j1, placar_j2, historico, num_partidas, &decisao_jogar_novamente);
+    }
+
+    // Ao final, retornamos a decisão que foi definida por 'posicionamento' ou 'movimentacao'.
+    return decisao_jogar_novamente;
+}
 
 
+bool executar_partida_pvm(ALLEGRO_EVENT_QUEUE *queue, ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, ALLEGRO_FONT *font2, 
+                         int win_w, int win_h, EstadoEspaço tabuleiro[7], PontoTabuleiro pontos_tabuleiro[7], 
+                         ALLEGRO_BITMAP *peca_player1, ALLEGRO_BITMAP *peca_player2, int *placar_j1, int *placar_j2, 
+                         RegistroPartida *historico, int *num_partidas) {
+
+    bool decisao_jogar_novamente = false;
+    int jogador_humano = JOGADOR1;
+    int jogador_ia = JOGADOR2;
+
+    // Fase 1: Posicionamento PvM. Retorna 'true' se o jogo deve continuar.
+    if (posicionamento_pvm(queue, background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, 
+                           peca_player1, peca_player2, placar_j1, placar_j2, jogador_humano, jogador_ia, historico, num_partidas, &decisao_jogar_novamente)) {
+        
+        // Fase 2: Movimentação PvM (só ocorre se o jogo não acabou antes)
+        movimentacao_pvm(queue, background, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, 
+                         peca_player1, peca_player2, placar_j1, placar_j2, jogador_humano, jogador_ia, historico, num_partidas, &decisao_jogar_novamente);
+    }
+
+    return decisao_jogar_novamente;
+}
 
 
 
@@ -1247,6 +1480,8 @@ int main(void) {
             mouse_x = event.mouse.x;
             mouse_y = event.mouse.y;
 
+
+
             // 1. Menu Principal
             if (!showing_play && !showing_help && !showing_history) {
                 // Botão "Jogar"
@@ -1288,61 +1523,71 @@ int main(void) {
                 }
             }
             // 2. Tela de Modos de Jogo
-            else if (showing_play) {
-                int pvp_x = 150, pvp_y = 310, pvp_w = 250, pvp_h = al_get_font_line_height(font2);
-                int pvm_x = 585, pvm_y = 310, pvm_w = 250, pvm_h = al_get_font_line_height(font2);
-                int rmenu_x = 370, rmenu_y = 300, rmenu_w = 200, rmenu_h = 40;
+           else if (showing_play) {
+    int pvp_x = 150, pvp_y = 310, pvp_w = 250, pvp_h = al_get_font_line_height(font2);
+    int pvm_x = 585, pvm_y = 310, pvm_w = 250, pvm_h = al_get_font_line_height(font2);
+    int rmenu_x = 370, rmenu_y = 300, rmenu_w = 200, rmenu_h = 40;
 
-                // Botão "PVP"
-                if (mouse_x >= pvp_x - pvp_w / 2 && mouse_x <= pvp_x + pvp_w / 2 && mouse_y >= pvp_y && mouse_y <= pvp_y + pvp_h) {
-                    limpaTela();
-                    printf("Modo PVP selecionado.\n");
-                    for (int i = 0; i < 7; i++) tabuleiro[i] = VAZIO;
-                    Chess_background_image = al_load_bitmap("Content/boardbackground.jpeg");
-                    if (!Chess_background_image) Chess_background_image = background;
-
-                    posicionamento(queue, Chess_background_image, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, &placar_j1, &placar_j2);
-                    movimentacao(queue, Chess_background_image, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, &placar_j1, &placar_j2, historico, &num_partidas);
-
-                    if (Chess_background_image != background) al_destroy_bitmap(Chess_background_image);
-                    desenha_menu1(background, font); // Retorna ao menu após o jogo
-                    showing_play = false;
-                }
-                // Botão "PVM"
-                else if (mouse_x >= pvm_x - pvm_w / 2 && mouse_x <= pvm_x + pvm_w / 2 && mouse_y >= pvm_y && mouse_y <= pvm_y + pvm_h) {
-                    printf("Modo PVM selecionado.\n");
-
-                        // Inicializa o tabuleiro
-                        for (int i = 0; i < 7; i++) tabuleiro[i] = VAZIO;
-
-                        // Define os jogadores
-                        int jogador_humano = JOGADOR1;
-                        int jogador_ia = JOGADOR2;
-
-                        // Carrega o fundo do tabuleiro
-                        Chess_background_image = al_load_bitmap("Content/boardbackground.jpeg");
-                        if (!Chess_background_image) Chess_background_image = background;
-
-                        // Chama a função movimentacao_pvm
-                        // Dentro do modo PvM
-                        posicionamento_pvm(queue, Chess_background_image, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, &placar_j1, &placar_j2, jogador_humano, jogador_ia);
-                        movimentacao_pvm(queue, Chess_background_image, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, &placar_j1, &placar_j2, jogador_humano, jogador_ia, historico, &num_partidas);
-
-                        // Retorna ao menu após o jogo
-                        if (Chess_background_image != background) al_destroy_bitmap(Chess_background_image);
-                        desenha_menu1(background, font);
-                        showing_play = false;
-                }
-                // Botão "Retornar ao Menu"
-                else if (mouse_x >= rmenu_x - rmenu_w / 2 && mouse_x <= rmenu_x + rmenu_w / 2 && mouse_y >= rmenu_y && mouse_y <= rmenu_y + rmenu_h) {
-                    printf("Retornando ao menu principal\n");
-                    desenha_menu1(background, font);
-                    if (play_image) al_destroy_bitmap(play_image);
-                    play_image = NULL;
-                    showing_play = false;
-                    showing_menu = true;
-                }
+    // --- Botão "PVP" ---
+    if (mouse_x >= pvp_x - pvp_w / 2 && mouse_x <= pvp_x + pvp_w / 2 && mouse_y >= pvp_y && mouse_y <= pvp_y + pvp_h) {
+        bool continuar_jogando;
+        do {
+            // 1. Limpa o estado do tabuleiro ANTES de cada partida.
+            for (int i = 0; i < 7; i++) {
+                tabuleiro[i] = VAZIO;
             }
+            // 2. Carrega o fundo da partida.
+            Chess_background_image = al_load_bitmap("Content/boardbackground.jpeg");
+            if (!Chess_background_image) Chess_background_image = background;
+
+            // 3. Executa a partida e recebe a decisão do jogador.
+            continuar_jogando = executar_partida_pvp(queue, Chess_background_image, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, &placar_j1, &placar_j2, historico, &num_partidas);
+            
+            if (Chess_background_image != background) al_destroy_bitmap(Chess_background_image);
+        
+        } while (continuar_jogando); // O loop depende diretamente do resultado da partida.
+
+        // Após o jogador decidir parar, retorna ao menu.
+        desenha_menu1(background, font);
+        showing_play = false;
+        showing_menu = true;
+    }
+    
+    // --- Botão "PVM" ---
+    else if (mouse_x >= pvm_x - pvm_w / 2 && mouse_x <= pvm_x + pvm_w / 2 && mouse_y >= pvm_y && mouse_y <= pvm_y + pvm_h) {
+        bool continuar_jogando;
+        do {
+            // 1. Limpa o estado do tabuleiro.
+            for (int i = 0; i < 7; i++) {
+                tabuleiro[i] = VAZIO;
+            }
+            // 2. Carrega o fundo da partida.
+            Chess_background_image = al_load_bitmap("Content/boardbackground.jpeg");
+            if (!Chess_background_image) Chess_background_image = background;
+            
+            // 3. Executa a partida PvM.
+            continuar_jogando = executar_partida_pvm(queue, Chess_background_image, font, font2, win_w, win_h, tabuleiro, pontos_tabuleiro, peca_player1, peca_player2, &placar_j1, &placar_j2, historico, &num_partidas);
+
+            if (Chess_background_image != background) al_destroy_bitmap(Chess_background_image);
+
+        } while (continuar_jogando);
+        
+        // Após o jogador decidir parar, retorna ao menu.
+        desenha_menu1(background, font);
+        showing_play = false;
+        showing_menu = true;
+    }
+
+    // --- Botão "Retornar ao Menu" ---
+    else if (mouse_x >= rmenu_x - rmenu_w / 2 && mouse_x <= rmenu_x + rmenu_w / 2 && mouse_y >= rmenu_y && mouse_y <= rmenu_y + rmenu_h) {
+        printf("Retornando ao menu principal\n");
+        desenha_menu1(background, font);
+        if (play_image) al_destroy_bitmap(play_image);
+        play_image = NULL;
+        showing_play = false;
+        showing_menu = true;
+    }
+}
             // 3. Tela de Ajuda
             else if (showing_help) {
                 int rmenu_x = 160, rmenu_y = 300, rmenu_w = 200, rmenu_h = 40;
