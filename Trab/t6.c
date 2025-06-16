@@ -419,10 +419,15 @@ bool movimento_valido(int origem, int destino, EstadoEspaço tabuleiro[7]) {
     int num_saltos = sizeof(saltos) / sizeof(saltos[0]);
 
     // Verifica adjacência direta
-    for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
         if (adjacentes[origem][i] == -1) break;
-        if (adjacentes[origem][i] == destino) return true;
+        if (adjacentes[origem][i] == destino) {
+            if (tabuleiro[destino] == VAZIO) {
+                return true; // Movimento adjacente válido
+            }
+        }
     }
+
     // Verifica salto sobre peça adversária
     for (int i = 0; i < num_saltos; i++) {
         if (saltos[i][0] == origem && saltos[i][2] == destino) {
